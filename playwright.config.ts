@@ -2,7 +2,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 // Reading credentials and URLs from .env file
-// To keeps sensitive data out of the code
+// T keeps sensitive data out of the code
 const LT_USERNAME = process.env.LT_USERNAME;
 const LT_ACCESS_KEY = process.env.LT_ACCESS_KEY;
 
@@ -60,7 +60,7 @@ export default defineConfig({
       name: 'api',
       testDir: './tests/api',
       use: {
-        baseURL: process.env.API_BASE_URL || 'https://reqres.in/api',
+        baseURL: process.env.API_BASE_URL || 'https://automationexercise.com',
       },
     },
 
