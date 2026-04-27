@@ -1,14 +1,27 @@
 import { test, expect } from '@playwright/test';
-// TC002 validates that POST method is not supported for products list API
-test('TC002 - POST To All Products List - Method Not Supported', async ({ request }) => {
-  // Sending POST request to products API
-  const response = await request.post('https://automationexercise.com/api/productsList');
-  // Validating HTTP status code is 405 - method not supported
+
+// TC002 validates that POST method is not allowed for products list API
+// Note: This API returns HTTP 200 always but uses responseCode inside body
+// to indicate actual result. So we validate responseCode 405 in body.
+test('TC002 - POST To All Products List - Method Not Supported', { tag: ['@regression', '@api'] }, async ({ request }) => {
+
+  // Sending POST request to products API using baseURL from config
+  // No hardcoded URL, picks up API_BASE_URL from .env file
+  const response = await request.post('/api/productsList');
+
+  // This API always returns HTTP 200 even for unsupported methods
+  // Actual error is inside response body as responseCode
   expect(response.status()).toBe(200);
-  // Parsing Converting response body
+
+  // Parsing response body to validate application level error
   const body = await response.json();
-  // Validating response code at application level is 405
+
+  // Validating body is not null or undefined
+  expect(body).toBeTruthy();
+
+  // Validating application level response code is 405 method not supported
   expect(body.responseCode).toBe(405);
-  // Validating error message
+
+  // Validating correct error message is returned
   expect(body.message).toBe('This request method is not supported.');
 });

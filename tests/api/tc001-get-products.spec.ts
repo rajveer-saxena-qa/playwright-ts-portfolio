@@ -1,36 +1,49 @@
-import {test,expect} from '@playwright/test';
-// Used interface to define the structure of GET Products API response fetched from console log
+import { test, expect } from '@playwright/test';
+
+// Interface defines the expected structure of the API response
+// This gives us type safety and auto complete in VS Code
+interface Product {
+  id: number;
+  name: string;
+  price: string;
+  brand: string;
+  category: object;
+}
+
 interface ProductsResponse {
-    responseCode: number;
-      products: {
-        id: number;
-        name: string;
-        price: string;
-        brand: string;
-        category: object;
-        }[];
-        }
-// Creating Test cases for Get All product list API        
-test('TC001 - Get All Product list',async({request})=>{
-// Sending Get request to product API
-const response = await request.get('https://automationexercise.com/api/productsList');
-//Validating HTTP status Code
-expect (response.status()).toBe(200);
-//Validating response body is not empty 
-const body = await response.json() as ProductsResponse;
-//validating response is not Null/Undefined/empty/false
-expect(body).toBeTruthy();
-//validating response code at application level
-expect(body.responseCode).toBe(200);
-//Validating product array is not empty
-expect(body.products.length).toBeGreaterThan(0);
-//Validating first product has required fields
-// Validating id field exist in response
-expect(body.products[0]).toHaveProperty('id');
-//Validating name field exist in response
-expect(body.products[0]).toHaveProperty('name');
-//Validating price field exist in reposne
-expect(body.products[0]).toHaveProperty('price');
-//Validating brand field exist in response
-expect(body.products[0]).toHaveProperty('brand');
+  responseCode: number;
+  products: Product[];
+}
+
+// Smoke and api tags help run filtered tests during certification
+test('TC001 - Get All Product list', { tag: ['@smoke', '@api'] }, async ({ request }) => {
+
+  // Sending GET request using baseURL from playwright.config.ts
+  // No hardcoded URL, picks up API_BASE_URL from .env file
+  const response = await request.get('/api/productsList');
+
+  // Validating HTTP status code from server
+  expect(response.status()).toBe(200);
+
+  // Parsing response body and casting to our defined interface
+  const body = await response.json() as ProductsResponse;
+
+  // Validating response body is not null or undefined
+  expect(body).toBeTruthy();
+
+  // Validating application level response code inside body
+  expect(body.responseCode).toBe(200);
+
+  // Validating products array is not empty
+  expect(body.products.length).toBeGreaterThan(0);
+
+  // Validating every product has required fields with correct data types
+  // Checking all products not just first one
+  body.products.forEach(product => {
+    // Check field exists and is correct type
+    expect(typeof product.id).toBe('number');
+    expect(typeof product.name).toBe('string');
+    expect(typeof product.price).toBe('string');
+    expect(typeof product.brand).toBe('string');
+  });
 });
