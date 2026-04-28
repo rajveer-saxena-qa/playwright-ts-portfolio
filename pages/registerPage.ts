@@ -117,8 +117,11 @@ export class RegisterPage extends BasePage {
   }
 
   // Click continue button after account is created
+  // Added wait for navigation to complete after continue click
   async clickContinue() {
     await this.click(this.continueButton);
+    // Wait for URL to change away from account_created page
+    await this.page.waitForURL('**/', { timeout: 10000 });
     await this.waitForPageLoad();
   }
 
@@ -128,7 +131,13 @@ export class RegisterPage extends BasePage {
   }
 
   // Check if account created success message is visible
+  // Added explicit wait before checking to handle slow page load
   async isAccountCreated(): Promise<boolean> {
-    return await this.isVisible(this.accountCreatedHeading);
+    try {
+      await this.page.waitForURL('**/account_created**', { timeout: 10000 });
+      return await this.isVisible(this.accountCreatedHeading);
+    } catch {
+      return false;
+    }
   }
 }

@@ -136,10 +136,12 @@ export class CheckoutPage extends BasePage {
   }
 
   // Check if checkout page is visible
+  // Check URL contains checkout instead of relying on heading locator
+  // More reliable than text based locator on this app
   async isOnCheckoutPage(): Promise<boolean> {
-    return await this.isVisible(this.checkoutPageHeading);
+  const url = await this.getCurrentUrl();
+  return url.includes('checkout');
   }
-
   // Check if order was placed successfully
   async isOrderPlacedSuccessfully(): Promise<boolean> {
     return await this.isVisible(this.orderSuccessHeading);

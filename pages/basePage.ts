@@ -21,8 +21,11 @@ export class BasePage {
   }
 
   // Wait for page to fully load before interacting
+  // Using domcontentloaded instead of networkidle
+  // because automationexercise.com has continuous ad network requests
+  // that prevent networkidle from ever settling
   async waitForPageLoad() {
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   // Get page title text
@@ -36,9 +39,17 @@ export class BasePage {
   }
 
   // Click any element by locator
+  // Using force click to bypass ad overlays on automationexercise.com
+  // Ads frequently cover elements and intercept pointer events
   async click(locator: Locator) {
-    await locator.click();
-  }
+    try {
+    // Try normal click first
+     await locator.click({ timeout: 5000 });
+    } catch {
+    // If normal click fails due to overlay, force click
+     await locator.click({ force: true });
+    }
+   }
 
   // Fill any input field with given text
   async fill(locator: Locator, text: string) {
@@ -56,10 +67,11 @@ export class BasePage {
   }
 
   // Wait for a specific element to appear on page
+  // Increased timeout to 15 seconds to handle slow ad heavy pages
   async waitForElement(locator: Locator) {
-    await locator.waitFor({ state: 'visible' });
+    await locator.waitFor({ state: 'visible', timeout: 15000 });
   }
-
+  
   // Scroll element into view before interacting
   // Useful for elements that are below the fold
   async scrollToElement(locator: Locator) {
