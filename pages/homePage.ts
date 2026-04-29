@@ -3,7 +3,7 @@ import { BasePage } from './basePage';
 
 // HomePage represents the main landing page of automationexercise.com
 // Contains locators and actions specific to home page
-// Extends BasePage to inherit all common methods like goto, click, fill
+// Extends BasePage to inherit all common methods like goto click fill
 export class HomePage extends BasePage {
 
   // Defining all locators as readonly class properties
@@ -49,10 +49,14 @@ export class HomePage extends BasePage {
   }
 
   // Click logout button in navigation
-  async clickLogout() {
-    await this.click(this.logoutButton);
-    await this.waitForPageLoad();
-  }
+  // Added wait for logout button to be visible before clicking
+ async clickLogout() {
+  // Scroll to top first to ensure navigation is visible
+  await this.page.evaluate(() => window.scrollTo(0, 0));
+  await this.waitForElement(this.logoutButton);
+  await this.click(this.logoutButton);
+  await this.waitForPageLoad();
+}
 
   // Click cart button in navigation
   async clickCart() {
@@ -61,14 +65,23 @@ export class HomePage extends BasePage {
   }
 
   // Click products button in navigation
-  async clickProducts() {
-    await this.click(this.productsButton);
-    await this.waitForPageLoad();
-  }
+  // Added wait for products button before clicking
+ async clickProducts() {
+  await this.waitForElement(this.productsButton);
+  await this.click(this.productsButton);
+  await this.waitForPageLoad();
+}
 
-  // Check if user is logged in by looking for logged in as text
-  async isLoggedIn(): Promise<boolean> {
-    return await this.isVisible(this.loggedInAsText);
+   // Check if user is logged in by looking for logged in as text
+   // Added explicit wait to handle slow navigation after login
+    async isLoggedIn(): Promise<boolean> {
+    try {
+      // Increased timeout specifically for post login and registration
+      await this.loggedInAsText.waitFor({ state: 'visible', timeout: 20000 });
+      return await this.isVisible(this.loggedInAsText);
+    } catch {
+      return false;
+    }
   }
 
   // Get the logged in username from navigation
@@ -79,5 +92,4 @@ export class HomePage extends BasePage {
   // Check if home page logo is visible to confirm we are on home page
   async isOnHomePage(): Promise<boolean> {
     return await this.isVisible(this.homePageLogo);
-  }
-}
+  }}

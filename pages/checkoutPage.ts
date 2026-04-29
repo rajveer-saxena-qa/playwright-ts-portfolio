@@ -82,18 +82,20 @@ export class CheckoutPage extends BasePage {
   // Fill payment details with test card information
   // Never use real card details in tests
   async fillPaymentDetails(
-    cardName: string,
-    cardNumber: string,
-    cvc: string,
-    expiryMonth: string,
-    expiryYear: string
-  ) {
-    await this.fill(this.cardNameInput, cardName);
-    await this.fill(this.cardNumberInput, cardNumber);
-    await this.fill(this.cardCvcInput, cvc);
-    await this.fill(this.cardExpiryMonthInput, expiryMonth);
-    await this.fill(this.cardExpiryYearInput, expiryYear);
-  }
+  cardName: string,
+  cardNumber: string,
+  cvc: string,
+  expiryMonth: string,
+  expiryYear: string
+) {
+  // Increased timeout for payment form on slow network
+  await this.cardNameInput.waitFor({ state: 'visible', timeout: 25000 });
+  await this.fill(this.cardNameInput, cardName);
+  await this.fill(this.cardNumberInput, cardNumber);
+  await this.fill(this.cardCvcInput, cvc);
+  await this.fill(this.cardExpiryMonthInput, expiryMonth);
+  await this.fill(this.cardExpiryYearInput, expiryYear);
+}
 
   // Click pay and confirm button to complete order
   async confirmPayment() {

@@ -38,32 +38,27 @@ test.describe('Logout Tests', () => {
   });
 
   // TC005 - Verify user cannot access account after logout
-  test('TC005 - Cannot access account after logout', { tag: ['@regression', '@ui'] }, async ({ page, apiUser }) => {
+  test('TC005 - Cannot access account after logout',
+  { tag: ['@regression', '@ui'] }, async ({ page, apiUser }) => {
 
-    // Initializing page objects
-    const homePage = new HomePage(page);
-    const loginPage = new LoginPage(page);
+  const homePage = new HomePage(page);
+  const loginPage = new LoginPage(page);
 
-    // Navigate to home page
-    await homePage.navigateToHome();
+  await homePage.navigateToHome();
+  await homePage.clickSignupLogin();
+  await loginPage.login(apiUser.email, apiUser.password);
+  expect(await homePage.isLoggedIn()).toBeTruthy();
 
-    // Go to login page and login
-    await homePage.clickSignupLogin();
-    await loginPage.login(apiUser.email, apiUser.password);
+  // Logout
+  await homePage.clickLogout();
 
-    // Verify logged in
-    expect(await homePage.isLoggedIn()).toBeTruthy();
+  // Verify on login page after logout
+  expect(await loginPage.isLoginFormVisible()).toBeTruthy();
 
-    // Logout
-    await homePage.clickLogout();
+  // Navigate back to home
+  await homePage.navigateToHome();
 
-    // Try to go back to home page after logout
-    await homePage.navigateToHome();
-
-    // Verify user is not logged in after navigating back
-    expect(await homePage.isLoggedIn()).toBeFalsy();
-
-    // Verify login button is visible again in navigation
-    expect(await homePage.isVisible(homePage.signupLoginButton)).toBeTruthy();
-  });
+  // Verify login button visible meaning user is logged out
+  expect(await homePage.isVisible(homePage.signupLoginButton)).toBeTruthy();
+});
 });

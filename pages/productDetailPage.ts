@@ -63,14 +63,16 @@ export class ProductDetailPage extends BasePage {
     await this.fill(this.quantityInput, quantity.toString());
   }
 
-  // Add product to cart with given quantity
-  // Default quantity is 1 if not specified
-  async addToCart(quantity: number = 1) {
-    await this.setQuantity(quantity);
-    await this.click(this.addToCartButton);
-    // Wait for success modal to appear after adding to cart
-    await this.waitForElement(this.cartSuccessModal);
-  }
+// Add product to cart with given quantity
+// Default quantity is 1 if not specified
+async addToCart(quantity: number = 1) {
+  // Wait for quantity input to be visible before interacting
+  await this.waitForElement(this.quantityInput);
+  await this.setQuantity(quantity);
+  await this.click(this.addToCartButton);
+  // Wait for success modal to appear after adding to cart
+  await this.waitForElement(this.cartSuccessModal);
+}
 
   // Click view cart link inside success modal
   // Navigates directly to cart page
@@ -91,10 +93,14 @@ export class ProductDetailPage extends BasePage {
     return await this.isVisible(this.cartSuccessModal);
   }
 
-  // Check if product name is visible
-  // Confirms we are on product detail page
+ // Check if on product detail page
   async isOnProductDetailPage(): Promise<boolean> {
-    return await this.isVisible(this.productName);
+    try {
+      await this.waitForElement(this.productName);
+      return await this.isVisible(this.productName);
+    } catch {
+      return false;
+    }
   }
 
   // Get all product details as an object

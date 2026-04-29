@@ -26,22 +26,16 @@ export default defineConfig({
   // HTML report gives a nice visual report after test run
   // List reporter shows live results in terminal while tests are running
   reporter: [['html'], ['list']],
+  timeout: 60000,
 
   use: {
-    // Default app URL for all UI tests
-    // If BASE_URL is set in .env it will use that, otherwise fallback to this
-    baseURL: process.env.BASE_URL || 'https://automationexercise.com',
-
-    // Capture trace file on first retry to help debug failures
-    trace: 'on-first-retry',
-
-    // Always take screenshot after every test, pass or fail
-    // This is required for TestMu AI certification submission
-    screenshot: 'on',
-
-    // Always record video of every test
-    // This is required for TestMu AI certification submission
-    video: 'on',
+  baseURL: process.env.BASE_URL || 'https://automationexercise.com',
+  trace: 'on-first-retry',
+  screenshot: 'on',
+  video: 'on',
+  // Increased action timeout to handle slow ad heavy pages
+  actionTimeout: 15000,
+  navigationTimeout: 30000,
   },
 
   projects: [

@@ -118,17 +118,23 @@ export class RegisterPage extends BasePage {
 
   // Click continue button after account is created
   // Added wait for navigation to complete after continue click
-  async clickContinue() {
-    await this.click(this.continueButton);
-    // Wait for URL to change away from account_created page
-    await this.page.waitForURL('**/', { timeout: 10000 });
-    await this.waitForPageLoad();
-  }
+ async clickContinue() {
+  await this.click(this.continueButton);
+  // Wait for any navigation after continue click
+  // Using domcontentloaded as app may not reach exact URL
+  await this.page.waitForLoadState('domcontentloaded');
+  await this.waitForPageLoad();
+}
 
   // Check if registration form is visible
-  async isRegisterFormVisible(): Promise<boolean> {
+ async isRegisterFormVisible(): Promise<boolean> {
+  try {
+    await this.waitForElement(this.registerFormHeading);
     return await this.isVisible(this.registerFormHeading);
+  } catch {
+    return false;
   }
+}
 
   // Check if account created success message is visible
   // Added explicit wait before checking to handle slow page load

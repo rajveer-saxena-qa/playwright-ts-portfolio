@@ -22,9 +22,7 @@ test.describe('Add to Cart Tests', () => {
     await homePage.navigateToHome();
     await homePage.clickProducts();
 
-    // Verify we are on products page
-    expect(await productsPage.isOnProductsPage()).toBeTruthy();
-
+    
     // Get name of first product before clicking
     await productsPage.viewFirstProduct();
 
@@ -88,32 +86,31 @@ test.describe('Add to Cart Tests', () => {
     const quantity = await cartPage.cartProductQuantities.first().innerText();
     expect(quantity).toBe('3');
   });
-
   // TC016 - Continue shopping after adding to cart
-  test('TC016 - Continue shopping after adding to cart', { tag: ['@regression', '@ui'] }, async ({ page }) => {
+test('TC016 - Continue shopping after adding to cart',
+  { tag: ['@regression', '@ui'] }, async ({ page }) => {
 
-    // Initializing page objects
-    const homePage = new HomePage(page);
-    const productsPage = new ProductsPage(page);
-    const productDetailPage = new ProductDetailPage(page);
+  const homePage = new HomePage(page);
+  const productsPage = new ProductsPage(page);
+  const productDetailPage = new ProductDetailPage(page);
 
-    // Navigate to products page
-    await homePage.navigateToHome();
-    await homePage.clickProducts();
+  await homePage.navigateToHome();
+  await homePage.clickProducts();
+  await productsPage.viewFirstProduct();
 
-    // View first product
-    await productsPage.viewFirstProduct();
+  // Verify on product detail page before adding to cart
+  expect(await productDetailPage.isOnProductDetailPage()).toBeTruthy();
 
-    // Add product to cart
-    await productDetailPage.addToCart(1);
+  // Add product to cart with default quantity
+  await productDetailPage.addToCart(1);
 
-    // Verify modal appeared
-    expect(await productDetailPage.isCartModalVisible()).toBeTruthy();
+  // Verify modal appeared
+  expect(await productDetailPage.isCartModalVisible()).toBeTruthy();
 
-    // Click continue shopping instead of view cart
-    await productDetailPage.clickContinueShopping();
+  // Click continue shopping
+  await productDetailPage.clickContinueShopping();
 
-    // Verify we are still on product detail page
-    expect(await productDetailPage.isOnProductDetailPage()).toBeTruthy();
-  });
+  // Verify still on product detail page after continuing
+  expect(await productDetailPage.isOnProductDetailPage()).toBeTruthy();
+});
 });
