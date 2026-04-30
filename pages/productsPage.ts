@@ -61,15 +61,16 @@ export class ProductsPage extends BasePage {
   }
 
   // Search for a product by keyword
-  // Scroll to search input first as it may be below fold
+  // Navigates directly to products page to ensure page is fully loaded
+  // More reliable than depending on clickProducts() navigation timing on cloud
   async searchProduct(keyword: string) {
-  // Navigate directly to products page to ensure search input is available
-  await this.page.goto('/products');
-  await this.searchInput.waitFor({ state: 'visible', timeout: 20000 });
-  await this.fill(this.searchInput, keyword);
-  await this.click(this.searchButton);
-  await this.waitForPageLoad();
-}
+    await this.page.goto('/products');
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.searchInput.waitFor({ state: 'visible', timeout: 20000 });
+    await this.fill(this.searchInput, keyword);
+    await this.click(this.searchButton);
+    await this.searchResultsHeading.waitFor({ state: 'visible', timeout: 20000 });
+  }
 
   // Get count of products currently visible on page
   // Used to verify search and filter results
@@ -78,22 +79,32 @@ export class ProductsPage extends BasePage {
   }
 
   // Click view product button on first product in list
-  // Added retry logic for ad intercept issues
-  async viewFirstProduct() {
-    await this.scrollToElement(this.firstProductViewButton);
+  // Added retry loop to handle ad overlay intercepts on cloud
+ async viewFirstProduct() {
+  await this.waitForElement(this.firstProductViewButton);
+  await this.scrollToElement(this.firstProductViewButton);
+
+  // Retry up to 5 times with longer wait for cloud environments
+  for (let attempt = 1; attempt <= 5; attempt++) {
     try {
       await this.click(this.firstProductViewButton);
-      await this.page.waitForURL('**/product_details/**', { timeout: 10000 });
+      await this.page.waitForURL('**/product_details/**', { timeout: 15000 });
+      break;
     } catch {
-      // Retry once if ad intercepted the click
-      await this.click(this.firstProductViewButton);
-      await this.page.waitForURL('**/product_details/**', { timeout: 10000 });
+      if (attempt === 5) {
+        throw new Error('Could not navigate to product details after 5 attempts');
+      }
+      // Scroll back to button and wait longer between retries
+      await this.page.waitForTimeout(2000);
+      await this.scrollToElement(this.firstProductViewButton);
     }
-    await this.waitForPageLoad();
   }
+  await this.waitForPageLoad();
+}
 
   // Filter products by Women category
-  // Women link is accordion toggle need to click subcategory after
+  // Using JavaScript evaluate to click hidden accordion element
+  // Bypasses Playwright visibility check for hidden subcategory links
  async filterByWomenCategory() {
   await this.scrollToElement(this.womenCategoryLink);
   await this.click(this.womenCategoryLink);
@@ -101,24 +112,26 @@ export class ProductsPage extends BasePage {
     const link = document.querySelector('#Women a') as HTMLElement;
     if (link) link.click();
   });
-  // Wait for URL change instead of products list
-  await this.page.waitForURL('**/category_products/**', { timeout: 20000 });
+  // Wait for products to appear instead of URL change
+  // URL change may be missed if navigation is too fast
+  await this.productsList.waitFor({ state: 'visible', timeout: 30000 });
   await this.waitForPageLoad();
 }
+
   // Filter products by Men category
-  // Using page evaluate to click hidden accordion element via JavaScript
-  // bypasses Playwright visibility check for hidden elements
+  // Using JavaScript evaluate to click hidden accordion element
+  // Bypasses Playwright visibility check for hidden subcategory links
   async filterByMenCategory() {
-  await this.scrollToElement(this.menCategoryLink);
-  await this.click(this.menCategoryLink);
-  await this.page.evaluate(() => {
-    const link = document.querySelector('#Men a') as HTMLElement;
-    if (link) link.click();
-  });
-  // Wait for products list to appear after category filter
-  await this.waitForElement(this.productsList);
-  await this.waitForPageLoad();
-}
+    await this.scrollToElement(this.menCategoryLink);
+    await this.click(this.menCategoryLink);
+    await this.page.evaluate(() => {
+      const link = document.querySelector('#Men a') as HTMLElement;
+      if (link) link.click();
+    });
+    await this.waitForElement(this.productsList);
+    await this.waitForPageLoad();
+  }
+
   // Filter products by Kids category
   async filterByKidsCategory() {
     await this.scrollToElement(this.kidsCategoryLink);
@@ -130,20 +143,24 @@ export class ProductsPage extends BasePage {
   }
 
   // Filter products by Polo brand
-  // Added waitForURL to handle page reload after brand filter
+  // Using JavaScript evaluate to bypass ad overlay
+  // Same approach used for Men and Women categories
   async filterByPoloBrand() {
-    await this.scrollToElement(this.poloBrandLink);
-    await this.click(this.poloBrandLink);
-
-    await this.page.waitForURL('**/brand_products/**');
-    await this.waitForPageLoad();
-  }
+  await this.scrollToElement(this.poloBrandLink);
+  await this.click(this.poloBrandLink);
+  await this.page.evaluate(() => {
+    const link = document.querySelector('.brands-name a') as HTMLElement;
+    if (link) link.click();
+  });
+  // Wait for products list instead of URL
+  await this.productsList.waitFor({ state: 'visible', timeout: 30000 });
+  await this.waitForPageLoad();
+}
 
   // Filter products by H&M brand
   async filterByHmBrand() {
     await this.scrollToElement(this.hmBrandLink);
     await this.click(this.hmBrandLink);
-
     await this.page.waitForURL('**/brand_products/**');
     await this.waitForPageLoad();
   }
@@ -152,7 +169,6 @@ export class ProductsPage extends BasePage {
   async filterByMadameBrand() {
     await this.scrollToElement(this.madameBrandLink);
     await this.click(this.madameBrandLink);
-
     await this.page.waitForURL('**/brand_products/**');
     await this.waitForPageLoad();
   }

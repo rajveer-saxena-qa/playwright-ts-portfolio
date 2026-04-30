@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 /// <reference types="node" />
 import { defineConfig, devices } from '@playwright/test';
 
@@ -58,12 +60,12 @@ export default defineConfig({
       },
     },
 
-    // TESTMU AI CLOUD - CHROME
-    // Runs your tests on real Chrome browser on TestMu AI cloud
-    // All 4 capabilities are enabled as required by certification
+// TESTMU AI CLOUD - CHROME
     {
       name: 'cloud-chrome',
       use: {
+        video: 'off',
+        screenshot: 'off',
         connectOptions: {
           wsEndpoint: `wss://cdp.lambdatest.com/playwright?capabilities=${encodeURIComponent(JSON.stringify({
             browserName: 'Chrome',
@@ -74,13 +76,9 @@ export default defineConfig({
               name: 'Chrome Test',
               username: LT_USERNAME,
               accessKey: LT_ACCESS_KEY,
-              // Captures all network requests and responses
               network: true,
-              // Records full video of the test session
               video: true,
-              // Takes screenshot at each step
               screenshot: true,
-              // Captures browser console logs
               console: true,
             },
           }))}`,
@@ -89,14 +87,14 @@ export default defineConfig({
     },
 
     // TESTMU AI CLOUD - FIREFOX
-    // Same as Chrome but runs on Firefox browser
-    // Cross browser testing is required for certification
     {
       name: 'cloud-firefox',
       use: {
+        video: 'off',
+        screenshot: 'off',
         connectOptions: {
           wsEndpoint: `wss://cdp.lambdatest.com/playwright?capabilities=${encodeURIComponent(JSON.stringify({
-            browserName: 'Firefox',
+            browserName: 'pw-firefox',
             browserVersion: 'latest',
             'LT:Options': {
               platform: 'Windows 10',
@@ -115,11 +113,11 @@ export default defineConfig({
     },
 
     // TESTMU AI CLOUD - EDGE
-    // Same as Chrome but runs on Microsoft Edge browser
-    // Having 3 browsers proves cross browser capability
     {
       name: 'cloud-edge',
       use: {
+        video: 'off',
+        screenshot: 'off',
         connectOptions: {
           wsEndpoint: `wss://cdp.lambdatest.com/playwright?capabilities=${encodeURIComponent(JSON.stringify({
             browserName: 'MicrosoftEdge',
@@ -139,6 +137,5 @@ export default defineConfig({
         },
       },
     },
-
   ],
 });

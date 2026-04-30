@@ -94,14 +94,14 @@ async addToCart(quantity: number = 1) {
   }
 
  // Check if on product detail page
-  async isOnProductDetailPage(): Promise<boolean> {
-    try {
-      await this.waitForElement(this.productName);
-      return await this.isVisible(this.productName);
-    } catch {
-      return false;
-    }
+ async isOnProductDetailPage(): Promise<boolean> {
+  try {
+    await this.productName.waitFor({ state: 'visible', timeout: 20000 });
+    return await this.isVisible(this.productName);
+  } catch {
+    return false;
   }
+}
 
   // Get all product details as an object
   // Useful for assertions in tests

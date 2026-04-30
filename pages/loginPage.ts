@@ -73,9 +73,14 @@ export class LoginPage extends BasePage {
   }
 
   // Check if signup form is visible on page
-  async isSignupFormVisible(): Promise<boolean> {
+ async isSignupFormVisible(): Promise<boolean> {
+  try {
+    await this.waitForElement(this.signupFormHeading);
     return await this.isVisible(this.signupFormHeading);
+  } catch {
+    return false;
   }
+}
 
   // Check if login error message is visible
   // Used in negative test cases for wrong credentials
