@@ -93,8 +93,8 @@ npx playwright install
 Create a `.env` file in the root directory with the following variables:
 
 ```
-LT_USERNAME=your_lambdatest_username
-LT_ACCESS_KEY=your_lambdatest_access_key
+LT_USERNAME=lambdatest_username
+LT_ACCESS_KEY=lambdatest_access_key
 BASE_URL=https://automationexercise.com
 API_BASE_URL=https://automationexercise.com
 ```
