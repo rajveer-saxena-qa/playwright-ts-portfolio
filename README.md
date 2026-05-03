@@ -20,6 +20,7 @@ End to end test automation framework built using Playwright and TypeScript, demo
 - **Retry Logic** for handling dynamic ad overlays on test application
 
 ### Folder Structure
+```
 playwright-ts-portfolio/
 ├── pages/                    # Page Object Model classes
 │   ├── basePage.ts           # Common methods inherited by all pages
@@ -36,6 +37,7 @@ playwright-ts-portfolio/
 ├── fixtures/                 # Custom Playwright fixtures
 ├── testdata/                 # Centralized test data
 └── playwright.config.ts      # Framework configuration
+```
 
 ## Test Coverage
 
@@ -80,6 +82,7 @@ No credentials required. Both values point to the public test application.
 
 ## Running Tests
 
+```bash
 # Run all UI tests on Chrome
 npx playwright test --project=local-chrome
 
@@ -97,7 +100,7 @@ npx playwright test --grep @smoke --project=local-chrome
 
 # Run regression tests only
 npx playwright test --grep @regression --project=local-chrome
-
+```
 ## Test Tags
 | Tag | Description |
 |-----|-------------|
