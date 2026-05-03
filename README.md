@@ -1,25 +1,25 @@
 # Playwright TypeScript Automation Portfolio
 
 ## Overview
-This repository contains an end to end test automation framework developed using Playwright and TypeScript. The framework demonstrates industry standard automation practices including Page Object Model, API testing, fixture based test data management and cross browser execution on TestMu AI cloud grid.
+End to end test automation framework built using Playwright and TypeScript, demonstrating industry standard practices including Page Object Model, API testing, custom fixture based user lifecycle management, and CI/CD pipeline integration.
+
+**Application Under Test:** [AutomationExercise.com](https://automationexercise.com)
 
 ## Tech Stack
 - **Playwright** 1.59.1
 - **TypeScript** for type safe automation
 - **Node.js** runtime environment
-- **TestMu AI Cloud Grid** for cross browser execution
 - **GitHub Actions** for CI/CD pipeline
 
 ## Framework Architecture
 
-### Design Patterns Used
+### Design Patterns
 - **Page Object Model (POM)** with BasePage for shared methods across all pages
 - **Custom Fixtures** for automated user lifecycle management via API
 - **Centralized Test Data** using TypeScript interfaces for type safety
 - **Retry Logic** for handling dynamic ad overlays on test application
 
 ### Folder Structure
-```
 playwright-ts-portfolio/
 ├── pages/                    # Page Object Model classes
 │   ├── basePage.ts           # Common methods inherited by all pages
@@ -35,9 +35,7 @@ playwright-ts-portfolio/
 │   └── ui/                   # UI test specifications
 ├── fixtures/                 # Custom Playwright fixtures
 ├── testdata/                 # Centralized test data
-├── utils/                    # Helper utilities
 └── playwright.config.ts      # Framework configuration
-```
 
 ## Test Coverage
 
@@ -59,52 +57,37 @@ playwright-ts-portfolio/
 | Add to Cart | Single product, Custom quantity, Continue shopping |
 | Checkout | Full checkout flow, Checkout requires login |
 
-### E2E Tests (3 Tests)
-| Test ID | Description |
-|---------|-------------|
-| TC019 | Complete journey from registration to order placement |
-| TC020 | Search product filter and add to cart |
-| TC021 | Filter by category and add to cart |
-
-**Total: 25 Tests**
+**Total: 22 Tests**
 
 ## Prerequisites
 - Node.js 18 or above
 - npm 8 or above
-- TestMu AI account for cloud execution
 
 ## Setup and Installation
 
-```bash
-# Clone the repository
 git clone https://github.com/rajveer-saxena-qa/playwright-ts-portfolio.git
-
-# Navigate to project directory
 cd playwright-ts-portfolio
-
-# Install dependencies
 npm install
-
-# Install Playwright browsers
 npx playwright install
-```
 
 ## Environment Configuration
-Create a `.env` file in the root directory with the following variables:
+Create a `.env` file in the root directory:
 
-```
-LT_USERNAME=lambdatest_username
-LT_ACCESS_KEY=lambdatest_access_key
 BASE_URL=https://automationexercise.com
 API_BASE_URL=https://automationexercise.com
-```
 
-## How to Run Tests
+No credentials required. Both values point to the public test application.
 
-### Local Execution
-```bash
-# Run all tests on local Chrome
+## Running Tests
+
+# Run all UI tests on Chrome
 npx playwright test --project=local-chrome
+
+# Run all UI tests on Firefox
+npx playwright test --project=local-firefox
+
+# Run all UI tests on Edge
+npx playwright test --project=local-edge
 
 # Run API tests only
 npx playwright test --project=api
@@ -114,45 +97,25 @@ npx playwright test --grep @smoke --project=local-chrome
 
 # Run regression tests only
 npx playwright test --grep @regression --project=local-chrome
-```
 
-### Cloud Execution on TestMu AI
-```bash
-# Run on Chrome
-npx playwright test --project=cloud-chrome
-
-# Run on Firefox
-npx playwright test --project=cloud-firefox
-
-# Run on Edge
-npx playwright test --project=cloud-edge
-
-# Run cross browser parallel execution
-npx playwright test --project=cloud-chrome --project=cloud-firefox --project=cloud-edge
-```
-
-### Test Tags Available
+## Test Tags
 | Tag | Description |
 |-----|-------------|
 | @smoke | Critical path tests |
 | @regression | Full regression suite |
 | @ui | UI automation tests |
 | @api | API automation tests |
-| @e2e | End to end journey tests |
 
 ## CI/CD Pipeline
-GitHub Actions workflow is configured to run tests automatically on every code push. The pipeline includes:
+GitHub Actions workflow runs automatically on every push and pull request:
 - Dependency installation
 - Playwright browser installation
-- Test execution
-- Report generation
+- Test execution on Ubuntu
+- HTML report upload as artifact (retained 30 days)
 
 ## Test Reports
-HTML reports are generated automatically after each test run:
-```bash
 npx playwright show-report
-```
 
 ## Author
 **Rajveer Saxena**
-QA Engineer
+QA Test Architect | 12+ Years BFSI Domain
