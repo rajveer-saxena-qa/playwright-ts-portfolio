@@ -123,6 +123,18 @@ GitHub Actions workflow runs automatically on every push and pull request:
 ## Test Reports
 npx playwright show-report
 
-## Author
-**Rajveer Saxena**
-QA Test Architect | 12+ Years BFSI Domain
+## Connect With Me
+
+**Rajveer Saxena**  
+QA Test Architect | 12+ Years BFSI Domain  
+
+[
+
+![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue)
+
+](https://www.linkedin.com/in/rajveer-saxena-8119a7152)
+[
+
+![GitHub](https://img.shields.io/badge/GitHub-Follow-black)
+
+](https://github.com/rajveer-saxena-qa)
