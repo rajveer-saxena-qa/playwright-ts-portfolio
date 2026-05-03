@@ -1,10 +1,14 @@
-# Playwright TypeScript Automation Portfolio
+# Playwright TypeScript Automation Portfolio — Rajveer Saxena
 
-## Overview
-End to end test automation framework built using Playwright and TypeScript, demonstrating industry standard practices including Page Object Model, API testing, custom fixture based user lifecycle management, and CI/CD pipeline integration.
+## About This Project
 
-**Application Under Test:** [AutomationExercise.com](https://automationexercise.com)
+Hi, I am Rajveer Saxena, a QA Professional with 12+ years of experience in BFSI domain currently working as Test Architect at Coforge Technologies.
 
+After completing my first Playwright portfolio on a banking application using JavaScript, I wanted to level up to TypeScript and build a more structured, production-grade framework. This repository represents that next step — moving from basic test scripting to a full framework with Page Object Model, API-driven fixtures, centralized test data, and CI/CD integration.
+
+**Application Under Test:** [AutomationExercise.com](https://automationexercise.com) — a public e-commerce demo application ideal for end to end automation practice.
+
+---
 ## Tech Stack
 - **Playwright** 1.59.1
 - **TypeScript** for type safe automation
